@@ -2,8 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlinx.serialization)
-    alias(libs.plugins.dagger)
-    kotlin("kapt")
 }
 
 android {
@@ -53,7 +51,8 @@ android {
 }
 
 dependencies {
-
+    implementation(project(":data"))
+    implementation(project(":domain"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -69,12 +68,17 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    // dagger
-    implementation(libs.dagger.hilt)
-    implementation(libs.hilt.compose.navigation)
-    kapt(libs.dagger.kapt)
+
+
 
     // navigation
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization)
+
+    //dependencies versions
+    val coroutinesVersion = "1.6.4"
+    val ktorVersion = "2.2.1"
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+
+
 }
