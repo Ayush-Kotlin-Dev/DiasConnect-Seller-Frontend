@@ -3,7 +3,6 @@ package com.ayush.diasconnect_seller
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
 import com.ayush.diasconnect_seller.ui.theme.DiasConnectSellerTheme
 import androidx.navigation.compose.NavHost
@@ -16,7 +15,7 @@ import dagger.hilt.android.HiltAndroidApp
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+//        enableEdgeToEdge()
         setContent {
             DiasConnectSellerTheme {
                 val navController = rememberNavController()

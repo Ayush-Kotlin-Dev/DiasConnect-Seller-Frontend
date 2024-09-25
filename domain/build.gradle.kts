@@ -1,8 +1,8 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.kotlinx.serialization)
-    alias(libs.plugins.dagger)
+    id("com.android.library")
+    id("org.jetbrains.kotlin.android")
+    id("com.google.dagger.hilt.android")
+    kotlin("plugin.serialization") version "1.9.22" // Use the same version as your Kotlin version
     kotlin("kapt")
 }
 
@@ -27,24 +27,18 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_18
+        targetCompatibility = JavaVersion.VERSION_18
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "18"
     }
 }
 
 dependencies {
-
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    api(libs.dagger.hilt)
-    api(libs.hilt.compose.navigation)
-    kapt(libs.dagger.kapt)
-    implementation(libs.kotlinx.serialization)
-
+    ktor()
+    implementation("com.google.dagger:hilt-android:${rootProject.extra["hiltVersion"]}")
+    kapt("com.google.dagger:hilt-android-compiler:${rootProject.extra["hiltVersion"]}")
+    implementation("com.squareup:javapoet:1.13.0")
+    serialization()
 }

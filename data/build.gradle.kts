@@ -1,7 +1,9 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.kotlinx.serialization)
+    id("com.android.library")
+    id("org.jetbrains.kotlin.android")
+    id("dagger.hilt.android.plugin")
+    kotlin("plugin.serialization") version "1.9.22"
+    kotlin("kapt")
 
 }
 
@@ -26,25 +28,18 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_18
+        targetCompatibility = JavaVersion.VERSION_18
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "18"
     }
 }
 
 dependencies {
-    implementation(project(":domain"))
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-
-    implementation(libs.ktor.client.core)
-    implementation(libs.ktor.client.cio)
-    implementation(libs.ktor.client.logging)
-    implementation(libs.ktor.client.content.negotiation)
-    implementation(libs.ktor.serialization.kotlinx.json)
+    hilt()
+    domain()
+    ktor()
+    implementation("com.squareup:javapoet:1.13.0")
+    serialization()
 }
