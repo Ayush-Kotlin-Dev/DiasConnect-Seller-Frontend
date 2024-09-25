@@ -10,6 +10,7 @@ activityCompose = "1.9.2"
 composeBom = "2024.04.01"
 appcompat = "1.7.0"
 ktor = "2.3.2"
+coil = "2.7.0"
 
 
 [libraries]
@@ -27,6 +28,9 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+
+#coil image loading
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
 
 #dagger hilt
@@ -58,3 +62,4 @@ jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = 
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version = "1.9.0" }
 dagger = { id = "com.google.dagger.hilt.android", version = "2.50" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+

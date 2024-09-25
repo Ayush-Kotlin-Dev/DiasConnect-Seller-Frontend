@@ -70,7 +70,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
 
-
     // navigation
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization)
@@ -79,6 +78,6 @@ dependencies {
     val coroutinesVersion = "1.6.4"
     val ktorVersion = "2.2.1"
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-
+    implementation(libs.coil.compose)
 
 }
