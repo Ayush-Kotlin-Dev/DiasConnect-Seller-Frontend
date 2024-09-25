@@ -1,10 +1,15 @@
 package com.ayush.domain.network
 
 import com.ayush.domain.model.Product
+import com.ayush.domain.model.User
 
 interface NetworkService {
 
     suspend fun getProducts(): ResultWrapper<List<Product>>
+
+    suspend fun login(email: String, password: String): ResultWrapper<User>
+
+    suspend fun signup(name: String, email: String, password: String): ResultWrapper<User>
 }
 
 
