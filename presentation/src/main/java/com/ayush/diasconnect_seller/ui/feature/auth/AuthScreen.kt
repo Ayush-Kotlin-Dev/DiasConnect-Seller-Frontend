@@ -4,8 +4,12 @@ import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,15 +17,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.ayush.diasconnect_seller.ui.feature.home.HomeViewModel
+import com.ayush.diasconnect_seller.R
 import com.ayush.diasconnect_seller.ui.theme.*
 
 @Composable
@@ -34,6 +40,7 @@ fun AuthScreen(
     val loginForm by viewModel.loginForm.collectAsState()
     val signupForm by viewModel.signupForm.collectAsState()
     val context = LocalContext.current
+    val scrollState = rememberScrollState()
 
     LaunchedEffect(authState) {
         when (authState) {
@@ -53,7 +60,8 @@ fun AuthScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(IndiaPostBlack)
+            .background(Color.White)
+            .verticalScroll(scrollState)
     ) {
         Column(
             modifier = Modifier
@@ -102,7 +110,7 @@ fun AuthToggle(isLoginMode: Boolean, onToggle: (Boolean) -> Unit) {
     Row(
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
-            .background(IndiaPostGray)
+            .background(IndiaPostLightGray)
     ) {
         ToggleButton(
             text = "Login",
@@ -123,7 +131,7 @@ fun ToggleButton(text: String, isSelected: Boolean, onClick: () -> Unit) {
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             containerColor = if (isSelected) IndiaPostRed else Color.Transparent,
-            contentColor = if (isSelected) Color.White else IndiaPostLightGray
+            contentColor = if (isSelected) Color.White else IndiaPostGray
         ),
         shape = RoundedCornerShape(8.dp)
     ) {
@@ -165,7 +173,7 @@ fun AuthForm(
             label = "Password",
             isError = if (isLoginMode) !loginForm.isPasswordValid else !signupForm.isPasswordValid,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
-            visualTransformation = PasswordVisualTransformation()
+            isPassword = true
         )
     }
 }
@@ -178,23 +186,41 @@ fun AuthTextField(
     label: String,
     isError: Boolean,
     keyboardOptions: KeyboardOptions,
-    visualTransformation: PasswordVisualTransformation = PasswordVisualTransformation()
+    isPassword: Boolean = false
 ) {
+    var passwordVisible by remember { mutableStateOf(false) }
+
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         label = { Text(label) },
         isError = isError,
         keyboardOptions = keyboardOptions,
-        visualTransformation = visualTransformation,
-        colors = TextFieldDefaults.colors(
-            focusedTextColor = Color.White,
-            focusedContainerColor = IndiaPostGray,
-            unfocusedContainerColor = IndiaPostGray,
+        visualTransformation = if (isPassword && !passwordVisible) PasswordVisualTransformation() else VisualTransformation.None,
+        trailingIcon = {
+            if (isPassword) {
+                val image = if (passwordVisible) {
+                    painterResource(id = R.drawable.show_eye_icon_filled)
+                } else {
+                    painterResource(id = R.drawable.hide_eye_icon_filled)
+                }
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(
+                        painter = image,
+                        contentDescription = if (passwordVisible) "Hide password" else "Show password",
+                        tint = IndiaPostBlack
+                    )
+                }
+            }
+        },
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedTextColor = IndiaPostBlack,
+            focusedBorderColor = IndiaPostRed,
+            unfocusedBorderColor = IndiaPostGray,
             focusedLabelColor = IndiaPostRed,
             unfocusedLabelColor = IndiaPostGray,
-            errorContainerColor = IndiaPostGray,
-            errorLabelColor = Color.Red
+            errorBorderColor = Color.Red,
+            errorLabelColor = Color.Red,
         ),
         modifier = Modifier.fillMaxWidth()
     )

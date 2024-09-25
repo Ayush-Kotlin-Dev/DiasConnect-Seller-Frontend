@@ -16,3 +16,6 @@ val IndiaPostDarkRed = Color(0xFFB71C1C)
 val IndiaPostBlack = Color(0xFF212121)
 val IndiaPostGray = Color(0xFF757575)
 val IndiaPostLightGray = Color(0xFFE0E0E0)
+
+
+val isCorrect = Color(0xFF4CAF50)
