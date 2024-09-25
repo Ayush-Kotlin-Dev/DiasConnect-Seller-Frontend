@@ -7,19 +7,36 @@ import kotlinx.serialization.Serializable
 @Serializable
 class DataProductModel(
     val id: Long,
-    val title: String,
-    val price: Double,
-    val category: String,
+    val name: String,
+    val price: Float,
     val description: String,
-    val image: String
+    val stock: Int,
+    val categoryId: Long,
+    val sellerId: Long,    val images: List<String> = emptyList(),
+    val createdAt: String? = null,
+    val updatedAt: String ? = null,
+
 ) {
 
     fun toProduct() = Product(
         id = id,
-        title = title,
+        name = name,
         price = price,
-        category = category,
         description = description,
-        image = image
+        stock = stock,
+        categoryId = categoryId,
+        sellerId = sellerId,
+        images = images,
+        createdAt = createdAt,
+        updatedAt = updatedAt
+
+
     )
 }
+@Serializable
+data class ProductsResponse(
+    val success: Boolean,
+    val products: List<DataProductModel>,
+    val message: String
+)
+

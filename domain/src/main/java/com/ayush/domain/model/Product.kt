@@ -4,10 +4,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Product(
-    val id: Long,
-    val title: String,
-    val price: Double,
-    val category: String,
+    val id: Long? = null,
+    val name: String,
+    val price: Float,
     val description: String,
-    val image: String,
+    val stock: Int,
+    val categoryId: Long,
+    val sellerId: Long,
+    val images: List<String> = emptyList(),
+    val createdAt: String? = null,
+    val updatedAt: String ? = null,
 )

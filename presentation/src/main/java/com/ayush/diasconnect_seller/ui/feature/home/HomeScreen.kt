@@ -40,23 +40,19 @@ fun HomeScreen(
     navController: NavController,
 ) {
     val viewModel: HomeViewModel = hiltViewModel()
-    // Observe the uiState from the ViewModel
     val uiState by viewModel.uiState.collectAsState()
 
     when (uiState) {
         is HomeScreenUIEvents.Loading -> {
-            // Show loading indicator
             CircularProgressIndicator(modifier = Modifier.fillMaxSize())
         }
 
         is HomeScreenUIEvents.Success -> {
-            // Display the list of products
             val products = (uiState as HomeScreenUIEvents.Success).data
             ProductList(products = products)
         }
 
         is HomeScreenUIEvents.Error -> {
-            // Show error message
             val errorMessage = (uiState as HomeScreenUIEvents.Error).message
             Text(
                 text = "Error: $errorMessage",
@@ -91,8 +87,8 @@ fun ProductItem(product: Product) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
-            model = product.image,
-            contentDescription = product.title,
+            model = product.images.firstOrNull(),
+            contentDescription = product.name,
             modifier = Modifier
                 .size(64.dp)
                 .clip(RoundedCornerShape(4.dp))
@@ -101,10 +97,9 @@ fun ProductItem(product: Product) {
 
         Spacer(modifier = Modifier.width(16.dp))
 
-        // Display product details
         Column {
             Text(
-                text = product.title,
+                text = product.name,
                 style = MaterialTheme.typography.titleLarge,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

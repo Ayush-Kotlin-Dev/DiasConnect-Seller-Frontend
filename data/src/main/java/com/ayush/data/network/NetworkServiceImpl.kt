@@ -1,6 +1,7 @@
 package com.ayush.data.network
 
 import com.ayush.data.model.DataProductModel
+import com.ayush.data.model.ProductsResponse
 import com.ayush.domain.model.Product
 import com.ayush.domain.network.NetworkService
 import com.ayush.domain.network.ResultWrapper
@@ -20,13 +21,14 @@ import io.ktor.utils.io.errors.IOException
 class NetworkServiceImpl(val client: HttpClient) : NetworkService {
     override suspend fun getProducts(): ResultWrapper<List<Product>> {
         return makeWebRequest(
-            url = "https://fakestoreapi.com/products",
+            url = "https://diasconnect-seller.onrender.com/product/seller/6",
             method = HttpMethod.Get,
-            mapper = { dataModels: List<DataProductModel> ->
-                dataModels.map { it.toProduct() }
+            mapper = { response: ProductsResponse ->
+                response.products.map { it.toProduct() }
             }
         )
     }
+
 
     @OptIn(InternalAPI::class)
     suspend inline fun <reified T, R> makeWebRequest(

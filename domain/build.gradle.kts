@@ -37,8 +37,8 @@ android {
 
 dependencies {
     ktor()
-    implementation("com.google.dagger:hilt-android:${rootProject.extra["hiltVersion"]}")
-    kapt("com.google.dagger:hilt-android-compiler:${rootProject.extra["hiltVersion"]}")
+    hilt()
+
     implementation("com.squareup:javapoet:1.13.0")
     serialization()
 }
