@@ -54,6 +54,9 @@ fun DependencyHandler.serialization() {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:${Versions.serialization}")
 }
 
+fun DependencyHandler.BottomNavigation() {
+
+}
 fun DependencyHandler.data() {
     implementation(project(":data"))
 }

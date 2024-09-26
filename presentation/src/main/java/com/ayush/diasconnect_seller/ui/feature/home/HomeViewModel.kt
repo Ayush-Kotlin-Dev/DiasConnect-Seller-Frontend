@@ -19,7 +19,7 @@ class HomeViewModel @Inject constructor(
     val uiState = _uiState
 
     init {
-        getProducts()
+        getProductsDummy()
     }
 
     fun getProducts() {
@@ -36,6 +36,55 @@ class HomeViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+    //dummy getProducts function
+    fun getProductsDummy() {
+        viewModelScope.launch {
+            _uiState.value = HomeScreenUIEvents.Loading
+            val data = listOf(
+                Product(
+                    id = 1,
+                    name = "Product 1",
+                    price = 10.00.toFloat() ,
+                    images = listOf("https://picsum.photos/200/300"),
+                    stock = 10,
+                    categoryId = 1,
+                    sellerId = 1,
+                    description = "Product 1 description"
+                ),
+                Product(
+                    id = 2,
+                    name = "Product 2",
+                    price = 20.00.toFloat() ,
+                    images = listOf("https://picsum.photos/200/300"),
+                    stock = 20,
+                    categoryId = 2,
+                    sellerId = 2,
+                    description = "Product 2 description"
+                ),
+                Product(
+                    id = 3,
+                    name = "Product 3",
+                    price = 30.00.toFloat() ,
+                    images = listOf("https://picsum.photos/200/300"),
+                    stock = 30,
+                    categoryId = 3,
+                    sellerId = 3,
+                    description = "Product 3 description"
+                ),
+                Product(
+                    id = 4,
+                    name = "Product 4",
+                    price = 40.00.toFloat() ,
+                    images = listOf("https://picsum.photos/200/300"),
+                    stock = 40,
+                    categoryId = 4,
+                    sellerId = 4,
+                    description = "Product 4 description"
+                ),
+            )
+            _uiState.value = HomeScreenUIEvents.Success(data)
         }
     }
 }

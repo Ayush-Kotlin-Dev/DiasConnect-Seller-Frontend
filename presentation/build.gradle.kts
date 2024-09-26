@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.dagger.hilt.android")
+    kotlin("plugin.serialization") version "1.9.22"
     kotlin("kapt")
 }
 
@@ -69,7 +70,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
     compose()
     coil()
-hilt()
+    hilt()
     data()
     domain()
     implementation("com.squareup:javapoet:1.13.0")
