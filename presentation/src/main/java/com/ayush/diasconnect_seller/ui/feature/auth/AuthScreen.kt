@@ -2,6 +2,8 @@ package com.ayush.diasconnect_seller.ui.feature.auth
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -9,12 +11,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -151,13 +157,15 @@ fun AuthForm(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        AnimatedVisibility(visible = !isLoginMode) {
+        AnimatedVisibility(visible = !isLoginMode , enter = fadeIn(), exit = fadeOut()) {
             AuthTextField(
                 value = signupForm.name,
                 onValueChange = { onSignupFormChange(it, null, null) },
-                label = "Name",
+                label = "Username",
                 isError = !signupForm.isNameValid,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+                errorMessage = signupForm.nameErrorMessage,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                isUsername = true
             )
         }
         AuthTextField(
@@ -165,6 +173,7 @@ fun AuthForm(
             onValueChange = { if (isLoginMode) onLoginFormChange(it, null) else onSignupFormChange(null, it, null) },
             label = "Email",
             isError = if (isLoginMode) !loginForm.isEmailValid else !signupForm.isEmailValid,
+            errorMessage = if (isLoginMode) loginForm.emailErrorMessage else signupForm.emailErrorMessage,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next)
         )
         AuthTextField(
@@ -172,6 +181,7 @@ fun AuthForm(
             onValueChange = { if (isLoginMode) onLoginFormChange(null, it) else onSignupFormChange(null, null, it) },
             label = "Password",
             isError = if (isLoginMode) !loginForm.isPasswordValid else !signupForm.isPasswordValid,
+            errorMessage = if (isLoginMode) loginForm.passwordErrorMessage else signupForm.passwordErrorMessage,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
             isPassword = true
         )
@@ -185,46 +195,108 @@ fun AuthTextField(
     onValueChange: (String) -> Unit,
     label: String,
     isError: Boolean,
+    errorMessage: String?,
     keyboardOptions: KeyboardOptions,
-    isPassword: Boolean = false
+    isPassword: Boolean = false,
+    isUsername: Boolean = false
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
+    var isFocused by remember { mutableStateOf(false) }
 
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        label = { Text(label) },
-        isError = isError,
-        keyboardOptions = keyboardOptions,
-        visualTransformation = if (isPassword && !passwordVisible) PasswordVisualTransformation() else VisualTransformation.None,
-        trailingIcon = {
-            if (isPassword) {
-                val image = if (passwordVisible) {
-                    painterResource(id = R.drawable.show_eye_icon_filled)
+    Column {
+        OutlinedTextField(
+            value = value,
+            onValueChange = {
+                if (isUsername) {
+                    onValueChange(it.lowercase())
                 } else {
-                    painterResource(id = R.drawable.hide_eye_icon_filled)
+                    onValueChange(it)
                 }
-                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Icon(
-                        painter = image,
-                        contentDescription = if (passwordVisible) "Hide password" else "Show password",
-                        tint = IndiaPostBlack
-                    )
+            },
+            label = { Text(label) },
+            isError = isError,
+            keyboardOptions = keyboardOptions,
+            visualTransformation = if (isPassword && !passwordVisible) PasswordVisualTransformation() else VisualTransformation.None,
+            trailingIcon = {
+                if (isPassword) {
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(
+                            imageVector = if (passwordVisible) Icons.Default.Lock else Icons.Default.Check,
+                            contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                        )
+                    }
                 }
-            }
-        },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedTextColor = IndiaPostBlack,
-            focusedBorderColor = IndiaPostRed,
-            unfocusedBorderColor = IndiaPostGray,
-            focusedLabelColor = IndiaPostRed,
-            unfocusedLabelColor = IndiaPostGray,
-            errorBorderColor = Color.Red,
-            errorLabelColor = Color.Red,
-        ),
-        modifier = Modifier.fillMaxWidth()
-    )
+            },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedTextColor = IndiaPostBlack,
+                focusedBorderColor = if (isError) Color.Red else if (isFocused) IndiaPostGreen else IndiaPostGray,
+                unfocusedBorderColor = if (isError) Color.Red else IndiaPostGray,
+                focusedLabelColor = if (isError) Color.Red else IndiaPostRed,
+                unfocusedLabelColor = if (isError) Color.Red else IndiaPostGray,
+                errorBorderColor = Color.Red,
+                errorLabelColor = Color.Red,
+                errorTrailingIconColor = Color.Red
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .onFocusChanged { isFocused = it.isFocused }
+        )
+
+        AnimatedVisibility(visible = isError && errorMessage != null) {
+            Text(
+                text = errorMessage ?: "",
+                color = Color.Red,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+            )
+        }
+
+//        if (isPassword && isFocused) {
+//            PasswordStrengthIndicator(password = value)
+//        }
+    }
 }
+
+//@Composable
+//fun PasswordStrengthIndicator(password: String) {
+//    val hasUppercase = password.any { it.isUpperCase() }
+//    val hasLowercase = password.any { it.isLowerCase() }
+//    val hasSpecialChar = password.any { it in "!@#$%^&*()" }
+//    val hasNumber = password.any { it.isDigit() }
+//    val hasValidLength = password.length > 8
+//
+//    Column(modifier = Modifier.padding(start = 16.dp, top = 8.dp)) {
+//        Text(
+//            text = "Password strength:",
+//            style = MaterialTheme.typography.bodySmall,
+//            color = IndiaPostGray
+//        )
+//        PasswordRequirement("Uppercase letter", hasUppercase)
+//        PasswordRequirement("Lowercase letter", hasLowercase)
+//        PasswordRequirement("Special character", hasSpecialChar)
+//        PasswordRequirement("Number", hasNumber)
+//        PasswordRequirement("At least 8 characters", hasValidLength)
+//    }
+//}
+//
+//@Composable
+//fun PasswordRequirement(text: String, isMet: Boolean) {
+//    Row(
+//        modifier = Modifier.padding(vertical = 2.dp),
+//        horizontalArrangement = Arrangement.spacedBy(8.dp)
+//    ) {
+//        Icon(
+//            imageVector = if (isMet) Icons.Default.CheckCircle else Icons.Default.Clear,
+//            contentDescription = null,
+//            tint = if (isMet) IndiaPostGreen else Color.Red
+//        )
+//        Text(
+//            text = text,
+//            style = MaterialTheme.typography.bodySmall,
+//            color = if (isMet) IndiaPostGreen else Color.Red
+//        )
+//    }
+//}
 
 @Composable
 fun AuthButton(

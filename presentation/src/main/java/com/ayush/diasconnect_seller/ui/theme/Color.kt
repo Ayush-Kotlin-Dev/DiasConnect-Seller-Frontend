@@ -19,3 +19,4 @@ val IndiaPostLightGray = Color(0xFFE0E0E0)
 
 
 val isCorrect = Color(0xFF4CAF50)
+val IndiaPostGreen = Color(0xFF4CAF50)
