@@ -1,130 +1,82 @@
 package com.ayush.diasconnect_seller
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Menu
-import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.ayush.diasconnect_seller.utils.SetupNavGraph
+import com.ayush.diasconnect_seller.utils.NavGraph
+import com.ayush.diasconnect_seller.utils.Screen
 
-
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContainerApp() {
     val navController = rememberNavController()
-    val isUserLoggedIn = remember { mutableStateOf(true) } // Replace with actual login check
-    val context = LocalContext.current
+    val isUserLoggedIn by remember { mutableStateOf(true) } //TODO implement DataStore to store user login state
 
-    val items = listOf(
+    val bottomNavItems = listOf(
         BottomNavItem(
             title = "Home",
-            selectedIcon = Icons.Filled.Home,
-            unselectedIcon = Icons.Outlined.Home,
-            hasNews = true,
-            badgeCount = 2,
-            route = "home"
+            icon = Icons.Filled.Home,
+            screen = Screen.Home
         ),
         BottomNavItem(
             title = "Orders",
-            selectedIcon = Icons.Filled.ShoppingCart,
-            unselectedIcon = Icons.Outlined.ShoppingCart,
-            route = "orders"
+            icon = Icons.Filled.ShoppingCart,
+            screen = Screen.Orders
         ),
         BottomNavItem(
             title = "Dashboard",
-            selectedIcon = Icons.Filled.Menu,
-            unselectedIcon = Icons.Outlined.Menu,
-            hasNews = true,
-            route = "dashboard"
+            icon = Icons.Filled.Menu,
+            screen = Screen.Dashboard
         )
     )
 
-    LaunchedEffect(isUserLoggedIn.value) {
-        if (isUserLoggedIn.value) {
-            navController.navigate("home") {
-                popUpTo("auth") { inclusive = true }
-            }
-        }
-    }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
 
     Scaffold(
         bottomBar = {
-            BottomNavBar(navController = navController, items = items)
+            if (currentDestination?.route != Screen.Auth.route) {
+                NavigationBar {
+                    bottomNavItems.forEach { item ->
+                        NavigationBarItem(
+                            icon = { Icon(item.icon, contentDescription = item.title) },
+                            label = { Text(item.title) },
+                            selected = currentDestination?.hierarchy?.any { it.route == item.screen.route } == true,
+                            onClick = {
+                                navController.navigate(item.screen.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            }
+                        )
+                    }
+                }
+            }
         }
     ) { innerPadding ->
-        SetupNavGraph(
+        NavGraph(
             navController = navController,
-            startDestination = if (isUserLoggedIn.value) "home" else "auth",
+            startDestination = if (isUserLoggedIn) Screen.Home.route else Screen.Auth.route,
             modifier = Modifier.padding(innerPadding)
         )
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun BottomNavBar(
-    navController: androidx.navigation.NavHostController,
-    items: List<BottomNavItem>
-) {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
-
-    AnimatedVisibility(visible = currentDestination?.route != "auth") {
-        NavigationBar {
-            items.forEach { item ->
-                val selected = currentDestination?.hierarchy?.any { it.route == item.route } == true
-                NavigationBarItem(
-                    icon = {
-                        BadgedBox(
-                            badge = {
-                                if (item.badgeCount != null) {
-                                    Badge { Text(item.badgeCount.toString()) }
-                                } else if (item.hasNews) {
-                                    Badge()
-                                }
-                            }
-                        ) {
-                            Icon(
-                                imageVector = if (selected) item.selectedIcon else item.unselectedIcon,
-                                contentDescription = item.title
-                            )
-                        }
-                    },
-                    label = { Text(item.title) },
-                    selected = selected,
-                    onClick = {
-                        navController.navigate(item.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    }
-                )
-            }
-        }
-    }
-}
-
 data class BottomNavItem(
     val title: String,
-    val selectedIcon: ImageVector,
-    val unselectedIcon: ImageVector,
-    val hasNews: Boolean = false,
-    val badgeCount: Int? = null,
-    val route: String
+    val icon: ImageVector,
+    val screen: Screen
 )

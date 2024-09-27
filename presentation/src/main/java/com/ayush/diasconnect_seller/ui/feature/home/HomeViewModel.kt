@@ -19,7 +19,7 @@ class HomeViewModel @Inject constructor(
     val uiState = _uiState
 
     init {
-        getProductsDummy()
+        getProducts()
     }
 
     fun getProducts() {

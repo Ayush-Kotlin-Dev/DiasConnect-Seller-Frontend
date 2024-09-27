@@ -2,10 +2,11 @@ package com.ayush.data.network
 
 import com.ayush.data.model.AuthRequest
 import com.ayush.data.model.AuthResponse
-import com.ayush.data.model.DataProductModel
+import com.ayush.domain.model.ProductUploadResponse
 import com.ayush.data.model.ProductsResponse
 import com.ayush.data.model.toUser
 import com.ayush.domain.model.Product
+import com.ayush.domain.model.ProductUploadRequest
 import com.ayush.domain.model.User
 import com.ayush.domain.network.NetworkService
 import com.ayush.domain.network.ResultWrapper
@@ -13,6 +14,9 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.ServerResponseException
+import io.ktor.client.request.forms.MultiPartFormDataContent
+import io.ktor.client.request.forms.append
+import io.ktor.client.request.forms.formData
 import io.ktor.client.request.header
 import io.ktor.client.request.request
 import io.ktor.client.request.setBody
@@ -21,7 +25,9 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.Parameters
 import io.ktor.http.contentType
 import io.ktor.util.InternalAPI
+import io.ktor.utils.io.core.writeFully
 import io.ktor.utils.io.errors.IOException
+import io.ktor.utils.io.streams.outputStream
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -49,7 +55,11 @@ class NetworkServiceImpl(val client: HttpClient) : NetworkService {
         }
     }
 
-    override suspend fun signup(name: String, email: String, password: String): ResultWrapper<User> {
+    override suspend fun signup(
+        name: String,
+        email: String,
+        password: String
+    ): ResultWrapper<User> {
         val authRequest = AuthRequest(name = name, email = email, password = password)
         return makeWebRequest(
             url = "$baseUrl/signup",
@@ -60,11 +70,33 @@ class NetworkServiceImpl(val client: HttpClient) : NetworkService {
         }
     }
 
+    override suspend fun uploadProduct(productData: ProductUploadRequest, imageFiles: List<ByteArray>): ResultWrapper<ProductUploadResponse> {
+        return makeWebRequest<ProductUploadResponse, ProductUploadResponse>(
+            url = "$baseUrl/product/add",
+            method = HttpMethod.Post,
+            multipartBody = MultiPartFormDataContent(
+                formData {
+                    append("product_data", Json.encodeToString(productData))
+                    imageFiles.forEachIndexed { index, imageFile ->
+                        append("image$index", "image$index.jpg", ContentType.Image.JPEG) {
+                            writeFully(imageFile)
+                        }
+                    }
+                }
+            )
+        ) { response: ProductUploadResponse ->
+            response
+        }
+    }
+
+
+    // Update makeWebRequest to handle multipart requests
     @OptIn(InternalAPI::class)
     suspend inline fun <reified T, R> makeWebRequest(
         url: String,
         method: HttpMethod,
         body: Any? = null,
+        multipartBody: MultiPartFormDataContent? = null,
         headers: Map<String, String> = emptyMap(),
         parameters: Map<String, String> = emptyMap(),
         noinline mapper: ((T) -> R)? = null
@@ -72,7 +104,6 @@ class NetworkServiceImpl(val client: HttpClient) : NetworkService {
         return try {
             val response = client.request(url) {
                 this.method = method
-                // Apply query parameters
                 url {
                     this.parameters.appendAll(Parameters.build {
                         parameters.forEach { (key, value) ->
@@ -80,16 +111,20 @@ class NetworkServiceImpl(val client: HttpClient) : NetworkService {
                         }
                     })
                 }
-                // Apply headers
                 headers.forEach { (key, value) ->
                     header(key, value)
                 }
-                // Set body for POST, PUT, etc.
-                if (body != null) {
-                    contentType(ContentType.Application.Json)
-                    when (body) {
-                        is String -> setBody(body)
-                        else -> setBody(Json.encodeToString(body))
+                when {
+                    multipartBody != null -> {
+                        setBody(multipartBody)
+                    }
+
+                    body != null -> {
+                        contentType(ContentType.Application.Json)
+                        when (body) {
+                            is String -> setBody(body)
+                            else -> setBody(Json.encodeToString(body))
+                        }
                     }
                 }
             }.body<T>()
@@ -105,7 +140,4 @@ class NetworkServiceImpl(val client: HttpClient) : NetworkService {
             ResultWrapper.Error(e)
         }
     }
-
-
-
 }

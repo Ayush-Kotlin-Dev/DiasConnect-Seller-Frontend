@@ -2,9 +2,11 @@ package com.ayush.domain.di
 
 import com.ayush.domain.repository.AuthRepository
 import com.ayush.domain.repository.ProductRepository
+import com.ayush.domain.repository.UploadProductRepository
 import com.ayush.domain.usecase.GetProductUseCase
 import com.ayush.domain.usecase.LoginUseCase
 import com.ayush.domain.usecase.SignupUseCase
+import com.ayush.domain.usecase.UploadProductUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,5 +40,13 @@ object UseCaseModule {
         authRepository: AuthRepository
     ): SignupUseCase {
         return SignupUseCase(authRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAddProductUseCase(
+        uploadProductRepository: UploadProductRepository
+    ): UploadProductUseCase {
+        return UploadProductUseCase(uploadProductRepository)
     }
 }
