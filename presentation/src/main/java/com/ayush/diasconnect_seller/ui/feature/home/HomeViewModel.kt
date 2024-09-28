@@ -6,6 +6,7 @@ import com.ayush.domain.model.Product
 import com.ayush.domain.network.ResultWrapper
 import com.ayush.domain.usecase.GetProductUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,7 +20,7 @@ class HomeViewModel @Inject constructor(
     val uiState = _uiState
 
     init {
-        getProducts()
+        getProductsDummy()
     }
 
     fun getProducts() {
@@ -84,6 +85,7 @@ class HomeViewModel @Inject constructor(
                     description = "Product 4 description"
                 ),
             )
+            delay(2000)
             _uiState.value = HomeScreenUIEvents.Success(data)
         }
     }

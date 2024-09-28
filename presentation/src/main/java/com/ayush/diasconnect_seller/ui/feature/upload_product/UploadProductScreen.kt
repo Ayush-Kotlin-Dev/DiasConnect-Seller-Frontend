@@ -99,38 +99,44 @@ fun UploadProductScreen(
                     ProductInputField(
                         value = uiState.productParams.name,
                         onValueChange = { viewModel.updateProductParams(uiState.productParams.copy(name = it)) },
-                        label = "Product Name"
+                        label = "Product Name",
+                        isError = uiState.productParams.name.isBlank() && uiState.errorMessage != null
                     )
                     ProductInputField(
                         value = uiState.productParams.price.toString(),
                         onValueChange = { viewModel.updateProductParams(uiState.productParams.copy(price = it.toFloatOrNull() ?: 0f)) },
                         label = "Price",
-                        keyboardType = KeyboardType.Decimal
+                        keyboardType = KeyboardType.Decimal,
+                        isError = uiState.productParams.price <= 0 && uiState.errorMessage != null
                     )
                     ProductInputField(
                         value = uiState.productParams.description,
                         onValueChange = { viewModel.updateProductParams(uiState.productParams.copy(description = it)) },
                         label = "Description",
                         singleLine = false,
-                        minLines = 3
+                        minLines = 3,
+                        isError = uiState.productParams.description.isBlank() && uiState.errorMessage != null
                     )
                     ProductInputField(
                         value = uiState.productParams.stock.toString(),
                         onValueChange = { viewModel.updateProductParams(uiState.productParams.copy(stock = it.toIntOrNull() ?: 0)) },
                         label = "Stock",
-                        keyboardType = KeyboardType.Number
+                        keyboardType = KeyboardType.Number,
+                        isError = uiState.productParams.stock <= 0 && uiState.errorMessage != null
                     )
                     ProductInputField(
                         value = uiState.productParams.categoryId.toString(),
                         onValueChange = { viewModel.updateProductParams(uiState.productParams.copy(categoryId = it.toLongOrNull() ?: 0L)) },
                         label = "Category ID",
-                        keyboardType = KeyboardType.Number
+                        keyboardType = KeyboardType.Number,
+                        isError = uiState.productParams.categoryId <= 0 && uiState.errorMessage != null
                     )
                     ProductInputField(
                         value = uiState.productParams.sellerId.toString(),
                         onValueChange = { viewModel.updateProductParams(uiState.productParams.copy(sellerId = it.toLongOrNull() ?: 0L)) },
                         label = "Seller ID",
-                        keyboardType = KeyboardType.Number
+                        keyboardType = KeyboardType.Number,
+                        isError = uiState.productParams.sellerId <= 0 && uiState.errorMessage != null
                     )
                 }
             }
@@ -138,9 +144,6 @@ fun UploadProductScreen(
             Button(
                 onClick = {
                     viewModel.submitProduct()
-                    scope.launch {
-                        snackbarHostState.showSnackbar("Product uploaded successfully!")
-                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -148,6 +151,14 @@ fun UploadProductScreen(
                 enabled = !uiState.isLoading
             ) {
                 Text(if (uiState.isLoading) "Uploading..." else "Upload Product")
+            }
+
+            if (uiState.errorMessage != null) {
+                Text(
+                    text = uiState.errorMessage!!,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
             }
         }
 
@@ -157,6 +168,13 @@ fun UploadProductScreen(
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator()
+            }
+        }
+
+        LaunchedEffect(uiState.isSuccess) {
+            if (uiState.isSuccess) {
+                snackbarHostState.showSnackbar("Product uploaded successfully!")
+                 navController.popBackStack()
             }
         }
     }
@@ -169,7 +187,8 @@ fun ProductInputField(
     label: String,
     keyboardType: KeyboardType = KeyboardType.Text,
     singleLine: Boolean = true,
-    minLines: Int = 1
+    minLines: Int = 1,
+    isError: Boolean = false
 ) {
     OutlinedTextField(
         value = value,
@@ -178,6 +197,7 @@ fun ProductInputField(
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         modifier = Modifier.fillMaxWidth(),
         singleLine = singleLine,
-        minLines = minLines
+        minLines = minLines,
+        isError = isError
     )
 }

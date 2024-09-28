@@ -41,6 +41,13 @@ class UploadProductViewModel @Inject constructor(
     }
 
     fun submitProduct() {
+        if (!validateProduct()) {
+            _uiState.value = _uiState.value.copy(
+                errorMessage = "Please fill in all required fields"
+            )
+            return
+        }
+
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
             try {
@@ -79,6 +86,16 @@ class UploadProductViewModel @Inject constructor(
                 )
             }
         }
+    }
+    private fun validateProduct(): Boolean {
+        val params = _uiState.value.productParams
+        return params.name.isNotBlank() &&
+                params.price > 0 &&
+                params.description.isNotBlank() &&
+                params.stock > 0 &&
+                params.categoryId > 0 &&
+                params.sellerId > 0 &&
+                _uiState.value.selectedImages.isNotEmpty()
     }
     fun addImageFromUri(context: Context, uri: Uri) {
         viewModelScope.launch {

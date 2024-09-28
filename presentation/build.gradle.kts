@@ -75,6 +75,6 @@ dependencies {
     domain()
     implementation("com.squareup:javapoet:1.13.0")
     serialization()
-
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.28.0")
 
 }
