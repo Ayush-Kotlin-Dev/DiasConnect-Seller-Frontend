@@ -1,3 +1,4 @@
+// this is the build.gradle.kts file for the data module
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
@@ -40,6 +41,6 @@ dependencies {
     hilt()
     domain()
     ktor()
-    implementation("com.squareup:javapoet:1.13.0")
     serialization()
+    preferenceDataStore()
 }

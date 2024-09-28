@@ -14,4 +14,7 @@ object Versions {
     const val coil = "2.7.0"
     const val hilt = "2.50"
     const val serialization = "1.5.1"
+    const val room = "2.6.1"
+    const val preferencesDatastore = "1.1.1"
+
 }

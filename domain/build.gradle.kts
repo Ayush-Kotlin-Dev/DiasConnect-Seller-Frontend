@@ -1,3 +1,4 @@
+// this is the build.gradle.kts file for the domain module
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
@@ -38,7 +39,5 @@ android {
 dependencies {
     ktor()
     hilt()
-
-    implementation("com.squareup:javapoet:1.13.0")
     serialization()
 }

@@ -29,9 +29,11 @@ import com.ayush.diasconnect_seller.utils.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContainerApp() {
+fun ContainerApp(
+    user: MainActivityViewModel.User?
+) {
     val navController = rememberNavController()
-    val isUserLoggedIn by remember { mutableStateOf(true) } //TODO implement DataStore to store user login state
+    val isUserLoggedIn = user != null
 
     val bottomNavItems = listOf(
         BottomNavItem(

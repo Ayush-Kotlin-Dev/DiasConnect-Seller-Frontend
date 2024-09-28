@@ -1,3 +1,4 @@
+//this is the build.gradle.kts file for the buildSrc module
 plugins {
     `kotlin-dsl`
 }

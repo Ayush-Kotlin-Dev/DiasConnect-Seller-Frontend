@@ -18,6 +18,11 @@ class AuthViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val signupUseCase: SignupUseCase
 ) : ViewModel() {
+    //todo show a welcome message to user after login or signup
+    //todo show a option at login page to login with a previous account you have created by calling getCurrentUser() method in AuthRepository
+    private val _currentUser = MutableStateFlow<User?>(null)
+    val currentUser: StateFlow<User?> = _currentUser
+
 
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
     val authState: StateFlow<AuthState> = _authState

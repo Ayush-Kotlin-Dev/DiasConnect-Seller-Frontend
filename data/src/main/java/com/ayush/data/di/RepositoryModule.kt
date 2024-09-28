@@ -1,5 +1,6 @@
 package com.ayush.data.di
 
+import com.ayush.data.datastore.UserPreferences
 import com.ayush.data.repository.AuthRepositoryImpl
 import com.ayush.data.repository.ProductRepositoryImpl
 import com.ayush.data.repository.UploadProductRepositoryImpl
@@ -28,9 +29,10 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideAuthRepository(
-        networkService: NetworkService
+        networkService: NetworkService,
+        userPreferences: UserPreferences
     ): AuthRepository {
-        return AuthRepositoryImpl(networkService)
+        return AuthRepositoryImpl(networkService , userPreferences )
     }
 
     @Provides
@@ -40,5 +42,7 @@ object RepositoryModule {
     ): UploadProductRepository {
         return UploadProductRepositoryImpl(networkService)
     }
+
+
 
 }

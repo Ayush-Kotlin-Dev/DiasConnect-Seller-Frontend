@@ -11,13 +11,19 @@ object Dependencies {
     const val composeRuntime = "androidx.compose.runtime:runtime:${Versions.compose}"
 
 
-
     const val hiltAndroid = "com.google.dagger:hilt-android:${Versions.hilt}"
     const val hiltCompiler = "com.google.dagger:hilt-android-compiler:${Versions.hilt}"
     const val hiltAgp = "com.google.dagger:hilt-android-gradle-plugin:${Versions.hilt}"
     const val hiltCompose = "androidx.hilt:hilt-navigation-compose:1.2.0"
 
+    // Room
+    const val roomRuntime = "androidx.room:room-runtime:${Versions.room}"
+    const val roomKtx = "androidx.room:room-ktx:${Versions.room}"
+    const val roomCompiler = "androidx.room:room-compiler:${Versions.room}"
+    const val roomPaging = "androidx.room:room-paging:${Versions.room}"
 
+    // Preferences Datastore
+    const val preferencesDatastore = "androidx.datastore:datastore-preferences:${Versions.preferencesDatastore}"
 }
 
 fun DependencyHandler.compose() {
@@ -34,7 +40,6 @@ fun DependencyHandler.hilt() {
     implementation(Dependencies.hiltCompose)
     kapt(Dependencies.hiltCompiler)
 }
-
 
 
 fun DependencyHandler.coil() {
@@ -57,10 +62,22 @@ fun DependencyHandler.serialization() {
 fun DependencyHandler.BottomNavigation() {
 
 }
+
+fun DependencyHandler.preferenceDataStore() {
+    implementation(Dependencies.preferencesDatastore)
+}
+
 fun DependencyHandler.data() {
     implementation(project(":data"))
 }
 
 fun DependencyHandler.domain() {
     implementation(project(":domain"))
+}
+
+fun DependencyHandler.room() {
+    implementation(Dependencies.roomRuntime)
+    implementation(Dependencies.roomKtx)
+    kapt(Dependencies.roomCompiler)
+    implementation(Dependencies.roomPaging)
 }
