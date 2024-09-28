@@ -1,5 +1,7 @@
 package com.ayush.diasconnect_seller.ui.feature.upload_product
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ayush.domain.model.ProductUploadRequest
@@ -78,7 +80,17 @@ class UploadProductViewModel @Inject constructor(
             }
         }
     }
-
+    fun addImageFromUri(context: Context, uri: Uri) {
+        viewModelScope.launch {
+            val file = File(context.cacheDir, "temp_image_${System.currentTimeMillis()}.jpg")
+            context.contentResolver.openInputStream(uri)?.use { input ->
+                file.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            }
+            addImage(file)
+        }
+    }
     fun resetState() {
         _uiState.value = UploadProductUiState()
     }
