@@ -19,6 +19,9 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<HomeScreenUIEvents>(HomeScreenUIEvents.Loading)
     val uiState = _uiState
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing = _isRefreshing.asStateFlow()
+
     init {
         getProductsDummy()
     }
@@ -39,6 +42,17 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
+    fun refresh() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            getProductsDummy() // Or use getProducts() if you want to fetch real data
+            _isRefreshing.value = false
+        }
+    }
+
+    // ... rest of the code remains the same
+}
     //dummy getProducts function
     fun getProductsDummy() {
         viewModelScope.launch {
