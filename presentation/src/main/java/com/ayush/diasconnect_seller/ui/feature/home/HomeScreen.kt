@@ -30,8 +30,13 @@ fun HomeScreen(
 ) {
     val viewModel: HomeViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
 
-    Column {
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(isRefreshing),
+        onRefresh = { viewModel.refresh() }
+    ) {
+        Column {
             when (val currentState = uiState) {
                 is HomeScreenUIEvents.Loading -> LoadingView()
                 is HomeScreenUIEvents.Success -> ProductList(products = currentState.data)
@@ -41,6 +46,9 @@ fun HomeScreen(
             }
         }
     }
+}
+
+// ... rest of the composables remain the same
 
 @Composable
 fun ProductList(products: List<Product>) {
