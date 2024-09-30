@@ -1,5 +1,6 @@
 package com.ayush.data.network
 
+import com.ayush.data.datastore.UserPreferences
 import com.ayush.data.model.AuthRequest
 import com.ayush.data.model.AuthResponse
 import com.ayush.domain.model.ProductUploadResponse
@@ -31,11 +32,15 @@ import io.ktor.utils.io.streams.outputStream
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-class NetworkServiceImpl(val client: HttpClient) : NetworkService {
+class NetworkServiceImpl(
+    val client: HttpClient,
+    private val userPreferences: UserPreferences
+) : NetworkService {
     private val baseUrl = "https://diasconnect-seller.onrender.com"
     override suspend fun getProducts(): ResultWrapper<List<Product>> {
+        val id = userPreferences.getUserData().id
         return makeWebRequest(
-            url = "$baseUrl/product/seller/6",
+            url = "$baseUrl/product/seller/$id",
             method = HttpMethod.Get,
             mapper = { response: ProductsResponse ->
                 response.products.map { it.toProduct() }
@@ -70,13 +75,15 @@ class NetworkServiceImpl(val client: HttpClient) : NetworkService {
         }
     }
 
-    override suspend fun uploadProduct(productData: ProductUploadRequest, imageFiles: List<ByteArray>): ResultWrapper<ProductUploadResponse> {
+override suspend fun uploadProduct(productData: ProductUploadRequest, imageFiles: List<ByteArray>): ResultWrapper<ProductUploadResponse> {
+    val id = userPreferences.getUserData().id
+    val updatedProductData = productData.copy(sellerId = id)
         return makeWebRequest<ProductUploadResponse, ProductUploadResponse>(
             url = "$baseUrl/product/add",
             method = HttpMethod.Post,
             multipartBody = MultiPartFormDataContent(
                 formData {
-                    append("product_data", Json.encodeToString(productData))
+                    append("product_data", Json.encodeToString(updatedProductData))
                     imageFiles.forEachIndexed { index, imageFile ->
                         append("image$index", "image$index.jpg", ContentType.Image.JPEG) {
                             writeFully(imageFile)

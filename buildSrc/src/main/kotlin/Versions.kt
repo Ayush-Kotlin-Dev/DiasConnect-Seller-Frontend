@@ -16,5 +16,6 @@ object Versions {
     const val serialization = "1.5.1"
     const val room = "2.6.1"
     const val preferencesDatastore = "1.1.1"
+    const val voyagerVersion = "1.1.0-beta02"
 
 }

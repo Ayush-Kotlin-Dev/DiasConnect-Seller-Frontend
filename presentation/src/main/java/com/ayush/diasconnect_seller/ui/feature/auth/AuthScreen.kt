@@ -12,8 +12,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -23,7 +21,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -32,74 +29,89 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import com.ayush.diasconnect_seller.R
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import com.ayush.diasconnect_seller.ContainerApp
 import com.ayush.diasconnect_seller.ui.theme.*
 
-@Composable
-fun AuthScreen(
-    navController: NavController,
-) {
-    val viewModel: AuthViewModel = hiltViewModel()
-    var isLoginMode by remember { mutableStateOf(true) }
-    val authState by viewModel.authState.collectAsState()
-    val loginForm by viewModel.loginForm.collectAsState()
-    val signupForm by viewModel.signupForm.collectAsState()
-    val context = LocalContext.current
-    val scrollState = rememberScrollState()
+class AuthScreen : Screen {
+    @Composable
+    override fun Content() {
+        val viewModel: AuthViewModel = hiltViewModel()
+        var isLoginMode by remember { mutableStateOf(true) }
+        val authState by viewModel.authState.collectAsState()
+        val loginForm by viewModel.loginForm.collectAsState()
+        val signupForm by viewModel.signupForm.collectAsState()
+        val context = LocalContext.current
+        val navigator = LocalNavigator.currentOrThrow
+        val scrollState = rememberScrollState()
 
-    LaunchedEffect(authState) {
-        when (authState) {
-            is AuthState.Authenticated -> {
-                val message = if (isLoginMode) "Login successful" else "Registration successful"
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                navController.navigate("home") {
-                    popUpTo("auth") { inclusive = true }
+        LaunchedEffect(authState) {
+            when (authState) {
+                is AuthState.Authenticated -> {
+                    val message =
+                        if (isLoginMode) "Login successful" else "Registration successful"
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    navigator.replaceAll(ContainerApp(user = (authState as AuthState.Authenticated).user))
                 }
+
+                is AuthState.Error -> {
+                    Toast.makeText(
+                        context,
+                        (authState as AuthState.Error).message,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
+                else -> {}
             }
-            is AuthState.Error -> {
-                Toast.makeText(context, (authState as AuthState.Error).message, Toast.LENGTH_LONG).show()
-            }
-            else -> {}
         }
-    }
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .verticalScroll(scrollState)
-    ) {
-        Column(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .align(Alignment.Center),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxSize()
+                .background(Color.White)
+                .verticalScroll(scrollState)
         ) {
-            Logo()
-            Spacer(modifier = Modifier.height(32.dp))
-            AuthToggle(isLoginMode) { isLoginMode = it }
-            Spacer(modifier = Modifier.height(24.dp))
-            AuthForm(
-                isLoginMode = isLoginMode,
-                loginForm = loginForm,
-                signupForm = signupForm,
-                onLoginFormChange = viewModel::updateLoginForm,
-                onSignupFormChange = viewModel::updateSignupForm
-            )
-            Spacer(modifier = Modifier.height(24.dp))
-            AuthButton(
-                isLoginMode = isLoginMode,
-                loginForm = loginForm,
-                signupForm = signupForm,
-                onLoginClick = { viewModel.login(loginForm.email, loginForm.password) },
-                onSignupClick = { viewModel.signup(signupForm.name, signupForm.email, signupForm.password) }
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            AuthStateMessage(authState)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .align(Alignment.Center),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Logo()
+                Spacer(modifier = Modifier.height(32.dp))
+                AuthToggle(isLoginMode) { isLoginMode = it }
+                Spacer(modifier = Modifier.height(24.dp))
+                AuthForm(
+                    isLoginMode = isLoginMode,
+                    loginForm = loginForm,
+                    signupForm = signupForm,
+                    onLoginFormChange = viewModel::updateLoginForm,
+                    onSignupFormChange = viewModel::updateSignupForm
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                AuthButton(
+                    isLoginMode = isLoginMode,
+                    loginForm = loginForm,
+                    signupForm = signupForm,
+                    onLoginClick = { viewModel.login(loginForm.email, loginForm.password) },
+                    onSignupClick = {
+                        viewModel.signup(
+                            signupForm.name,
+                            signupForm.email,
+                            signupForm.password
+                        )
+                    }
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                AuthStateMessage(authState)
+            }
         }
     }
 }
+
 
 @Composable
 fun Logo() {
@@ -157,7 +169,7 @@ fun AuthForm(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        AnimatedVisibility(visible = !isLoginMode , enter = fadeIn(), exit = fadeOut()) {
+        AnimatedVisibility(visible = !isLoginMode, enter = fadeIn(), exit = fadeOut()) {
             AuthTextField(
                 value = signupForm.name,
                 onValueChange = { onSignupFormChange(it, null, null) },
@@ -170,19 +182,37 @@ fun AuthForm(
         }
         AuthTextField(
             value = if (isLoginMode) loginForm.email else signupForm.email,
-            onValueChange = { if (isLoginMode) onLoginFormChange(it, null) else onSignupFormChange(null, it, null) },
+            onValueChange = {
+                if (isLoginMode) onLoginFormChange(it, null) else onSignupFormChange(
+                    null,
+                    it,
+                    null
+                )
+            },
             label = "Email",
             isError = if (isLoginMode) !loginForm.isEmailValid else !signupForm.isEmailValid,
             errorMessage = if (isLoginMode) loginForm.emailErrorMessage else signupForm.emailErrorMessage,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next)
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Email,
+                imeAction = ImeAction.Next
+            )
         )
         AuthTextField(
             value = if (isLoginMode) loginForm.password else signupForm.password,
-            onValueChange = { if (isLoginMode) onLoginFormChange(null, it) else onSignupFormChange(null, null, it) },
+            onValueChange = {
+                if (isLoginMode) onLoginFormChange(null, it) else onSignupFormChange(
+                    null,
+                    null,
+                    it
+                )
+            },
             label = "Password",
             isError = if (isLoginMode) !loginForm.isPasswordValid else !signupForm.isPasswordValid,
             errorMessage = if (isLoginMode) loginForm.passwordErrorMessage else signupForm.passwordErrorMessage,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done
+            ),
             isPassword = true
         )
     }
@@ -329,6 +359,7 @@ fun AuthStateMessage(authState: AuthState) {
             authState.message,
             color = Color.Red
         )
+
         else -> {}
     }
 }

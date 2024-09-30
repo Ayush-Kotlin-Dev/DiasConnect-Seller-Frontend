@@ -2,6 +2,7 @@ package com.ayush.diasconnect_seller.ui.feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ayush.data.datastore.UserPreferences
 import com.ayush.domain.model.Product
 import com.ayush.domain.network.ResultWrapper
 import com.ayush.domain.usecase.GetProductUseCase
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getProductUseCase: GetProductUseCase
+    private val getProductUseCase: GetProductUseCase,
+    private val userPreferences: UserPreferences
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<HomeScreenUIEvents>(HomeScreenUIEvents.Loading)
@@ -22,6 +24,8 @@ class HomeViewModel @Inject constructor(
 
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
+
+
 
     init {
         getProductsDummy()

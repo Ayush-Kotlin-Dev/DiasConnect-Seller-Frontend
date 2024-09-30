@@ -1,6 +1,7 @@
 package com.ayush.data.di
 
 
+import com.ayush.data.datastore.UserPreferences
 import com.ayush.data.network.NetworkServiceImpl
 import com.ayush.domain.network.NetworkService
 import dagger.Module
@@ -47,8 +48,11 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideNetworkService(httpClient: HttpClient): NetworkService {
-        return NetworkServiceImpl(httpClient)
+    fun provideNetworkService(
+        httpClient: HttpClient,
+        userPreferences: UserPreferences
+    ): NetworkService {
+        return NetworkServiceImpl(httpClient, userPreferences)
     }
 }
 

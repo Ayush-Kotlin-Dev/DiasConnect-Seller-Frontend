@@ -39,51 +39,50 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import cafe.adriel.voyager.core.screen.Screen
 import coil.compose.AsyncImage
 import com.ayush.domain.model.Product
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun HomeScreen(
-    navController: NavController,
-    modifier: Modifier = Modifier
-) {
-    val viewModel: HomeViewModel = hiltViewModel()
-    val uiState by viewModel.uiState.collectAsState()
-    val isRefreshing by viewModel.isRefreshing.collectAsState()
-    val state = rememberPullToRefreshState()
-    val onRefresh = {
-        viewModel.refresh()
-    }
-    PullToRefreshBox(
-        modifier = Modifier.padding(16.dp),
-        state = state,
-        isRefreshing = isRefreshing,
-        onRefresh = onRefresh,
-        indicator = {
-            PullToRefreshDefaults.Indicator(
-                state = state,
-                isRefreshing = isRefreshing,
-                containerColor = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(40.dp).align(Alignment.TopCenter)
-            )
+class HomeScreen : Screen {
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    override fun Content() {
+        val viewModel: HomeViewModel = hiltViewModel()
+        val uiState by viewModel.uiState.collectAsState()
+        val isRefreshing by viewModel.isRefreshing.collectAsState()
+        val state = rememberPullToRefreshState()
+        val onRefresh = {
+            viewModel.refresh()
         }
-    ) {
-        Column {
-            when (val currentState = uiState) {
-                is HomeScreenUIEvents.Loading -> LoadingView()
-                is HomeScreenUIEvents.Success -> ProductList(products = currentState.data)
-                is HomeScreenUIEvents.Error -> ErrorView(message = currentState.message) {
-                    viewModel.getProducts()
+        PullToRefreshBox(
+            modifier = Modifier.padding(16.dp),
+            state = state,
+            isRefreshing = isRefreshing,
+            onRefresh = onRefresh,
+            indicator = {
+                PullToRefreshDefaults.Indicator(
+                    state = state,
+                    isRefreshing = isRefreshing,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .align(Alignment.TopCenter)
+                )
+            }
+        ) {
+            Column {
+                when (val currentState = uiState) {
+                    is HomeScreenUIEvents.Loading -> LoadingView()
+                    is HomeScreenUIEvents.Success -> ProductList(products = currentState.data)
+                    is HomeScreenUIEvents.Error -> ErrorView(message = currentState.message) {
+                        viewModel.getProducts()
+                    }
                 }
             }
+
         }
-
     }
-
-
 }
-
 @Composable
 fun ProductList(products: List<Product>) {
     if (products.isEmpty()) {
@@ -150,7 +149,7 @@ fun ProductCard(product: Product) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "$${product.price}",
+                        text = "₹${product.price}",
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary
                     )

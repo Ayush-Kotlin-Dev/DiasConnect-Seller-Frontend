@@ -94,7 +94,6 @@ class UploadProductViewModel @Inject constructor(
                 params.description.isNotBlank() &&
                 params.stock > 0 &&
                 params.categoryId > 0 &&
-                params.sellerId > 0 &&
                 _uiState.value.selectedImages.isNotEmpty()
     }
     fun addImageFromUri(context: Context, uri: Uri) {

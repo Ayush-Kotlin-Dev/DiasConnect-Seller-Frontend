@@ -3,6 +3,7 @@ package com.ayush.diasconnect_seller
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ayush.data.datastore.UserPreferences
+import com.ayush.domain.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +26,7 @@ class MainActivityViewModel @Inject constructor(
         viewModelScope.launch {
             val data = userPreferences.getUserData()
             _uiState.value = if (data.token.isNotEmpty() && data.id != -1L) {
-                UiState.LoggedIn(User(token = data.token, id = data.id))
+                UiState.LoggedIn(User(token = data.token, id = data.id , name = data.name , email = data.email , created = data.created , updated = data.updated))
             } else {
                 UiState.LoggedOut
             }
@@ -38,8 +39,4 @@ class MainActivityViewModel @Inject constructor(
         object LoggedOut : UiState()
     }
 
-    data class User(
-        val token: String,
-        val id: Long,
-    )
 }

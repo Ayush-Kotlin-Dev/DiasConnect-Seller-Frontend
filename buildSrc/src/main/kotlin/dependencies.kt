@@ -24,6 +24,13 @@ object Dependencies {
 
     // Preferences Datastore
     const val preferencesDatastore = "androidx.datastore:datastore-preferences:${Versions.preferencesDatastore}"
+
+    //Voyager Navigator
+    const val voyagerNavigator = "cafe.adriel.voyager:voyager-navigator:${Versions.voyagerVersion}"
+    const val voyagerAnimation =  "cafe.adriel.voyager:voyager-transitions:${Versions.voyagerVersion}"
+    const val voyagerTab =   "cafe.adriel.voyager:voyager-tab-navigator:${Versions.voyagerVersion}"
+
+
 }
 
 fun DependencyHandler.compose() {
@@ -65,6 +72,12 @@ fun DependencyHandler.BottomNavigation() {
 
 fun DependencyHandler.preferenceDataStore() {
     implementation(Dependencies.preferencesDatastore)
+}
+
+fun DependencyHandler.voyagerNavigator() {
+    implementation(Dependencies.voyagerNavigator)
+    implementation(Dependencies.voyagerAnimation)
+    implementation(Dependencies.voyagerTab)
 }
 
 fun DependencyHandler.data() {

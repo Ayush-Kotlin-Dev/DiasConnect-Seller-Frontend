@@ -9,7 +9,7 @@ data class ProductUploadRequest(
     val description: String,
     val stock: Int,
     val categoryId: Long,
-    val sellerId: Long
+    val sellerId: Long = -1,
 )
 
 @Serializable

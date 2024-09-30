@@ -13,6 +13,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.SlideTransition
+import com.ayush.diasconnect_seller.ui.feature.auth.AuthScreen
 import com.ayush.diasconnect_seller.ui.theme.DiasConnectSellerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -34,10 +37,14 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                         is MainActivityViewModel.UiState.LoggedIn -> {
-                            ContainerApp(user = (uiState as MainActivityViewModel.UiState.LoggedIn).user)
+                            Navigator(screen = ContainerApp(user = (uiState as MainActivityViewModel.UiState.LoggedIn).user)) {
+                                SlideTransition(it)
+                            }
                         }
                         is MainActivityViewModel.UiState.LoggedOut -> {
-                            ContainerApp(user = null)
+                            Navigator(screen = AuthScreen()) {navigator ->
+                                SlideTransition(navigator)
+                            }
                         }
                     }
                 }
