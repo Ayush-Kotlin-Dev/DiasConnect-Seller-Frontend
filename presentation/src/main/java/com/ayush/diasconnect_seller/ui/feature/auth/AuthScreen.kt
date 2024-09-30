@@ -227,13 +227,11 @@ fun AuthTextField(
                     }
                 }
             },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
+            colors = TextFieldDefaults.colors(
+                focusedIndicatorColor = IndiaPostRed,
+                unfocusedIndicatorColor = IndiaPostGray,
+                errorIndicatorColor = Color.Red,
                 focusedTextColor = IndiaPostBlack,
-                focusedBorderColor = if (isError) Color.Red else if (isFocused) IndiaPostGreen else IndiaPostGray,
-                unfocusedBorderColor = if (isError) Color.Red else IndiaPostGray,
-                focusedLabelColor = if (isError) Color.Red else IndiaPostRed,
-                unfocusedLabelColor = if (isError) Color.Red else IndiaPostGray,
-                errorBorderColor = Color.Red,
                 errorLabelColor = Color.Red,
                 errorTrailingIconColor = Color.Red
             ),

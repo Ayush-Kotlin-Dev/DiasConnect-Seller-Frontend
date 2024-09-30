@@ -8,6 +8,7 @@ import com.ayush.domain.usecase.GetProductUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -46,15 +47,12 @@ class HomeViewModel @Inject constructor(
     fun refresh() {
         viewModelScope.launch {
             _isRefreshing.value = true
-            getProductsDummy() // Or use getProducts() if you want to fetch real data
+            getProducts() // Or use getProducts() if you want to fetch real data
             _isRefreshing.value = false
         }
     }
 
-    // ... rest of the code remains the same
-}
-    //dummy getProducts function
-    fun getProductsDummy() {
+    private fun getProductsDummy() {
         viewModelScope.launch {
             _uiState.value = HomeScreenUIEvents.Loading
             val data = listOf(
