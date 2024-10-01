@@ -11,11 +11,16 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemColors
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
@@ -24,6 +29,7 @@ import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.ayush.diasconnect_seller.ui.tab.DashboardTab
 import com.ayush.diasconnect_seller.ui.tab.HomeTab
 import com.ayush.diasconnect_seller.ui.tab.OrdersTab
+import com.ayush.diasconnect_seller.ui.theme.IndiaPostRed
 import com.ayush.domain.model.User
 
 data class ContainerApp(
@@ -69,7 +75,18 @@ private fun RowScope.TabNavigationItem(tab: Tab) {
             }
         },
         label = {
-            Text(text = tab.options.title)
-        }
+            Text(
+                text = tab.options.title,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.Black
+            )
+        },
+        colors = NavigationBarItemDefaults.colors(
+            selectedIconColor = Color.Red.copy(alpha = 0.7f),
+            unselectedIconColor = Color.Black.copy(alpha = 0.7f),
+            indicatorColor = Color.Transparent,
+
+        ),
+        alwaysShowLabel = false
     )
 }
