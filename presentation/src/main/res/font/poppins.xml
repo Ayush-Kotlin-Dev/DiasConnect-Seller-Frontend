@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font-family xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <font
+        android:font="@font/poppins_regular"
+        android:fontStyle="normal"
+        android:fontVariationSettings=""
+        android:fontWeight="400"
+        android:supportsRtl="true"
+        android:ttcIndex="0" />
+
+    <font
+        android:font="@font/poppins_medium"
+        android:fontStyle="normal"
+        android:fontVariationSettings=""
+        android:fontWeight="500"
+        android:supportsRtl="true"
+        android:ttcIndex="1" />
+
+    <font
+        android:font="@font/poppins_semibold"
+        android:fontStyle="normal"
+        android:fontVariationSettings=""
+        android:fontWeight="600"
+        android:supportsRtl="true"
+        android:ttcIndex="2" />
+
+    <font
+        android:font="@font/poppins_bold"
+        android:fontStyle="normal"
+        android:fontVariationSettings=""
+        android:fontWeight="700"
+        android:supportsRtl="true"
+        android:ttcIndex="3" />
+
+    <font
+        android:font="@font/poppins_extrabold"
+        android:fontStyle="normal"
+        android:fontVariationSettings=""
+        android:fontWeight="800"
+        android:supportsRtl="true"
+        android:ttcIndex="4" />
+
+    <font
+        android:font="@font/poppins_black"
+        android:fontStyle="normal"
+        android:fontVariationSettings=""
+        android:fontWeight="900"
+        android:supportsRtl="true"
+        android:ttcIndex="5" />
+
+    <font
+        android:font="@font/poppins_light"
+        android:fontStyle="normal"
+        android:fontVariationSettings=""
+        android:fontWeight="300"
+        android:supportsRtl="true"
+        android:ttcIndex="6" />
+
+    <font
+        android:font="@font/poppins_thin"
+        android:fontStyle="normal"
+        android:fontVariationSettings=""
+        android:fontWeight="200"
+        android:supportsRtl="true"
+        android:ttcIndex="7" />
+
+    <font
+        android:font="@font/poppins_extralight"
+        android:fontStyle="normal"
+        android:fontVariationSettings=""
+        android:fontWeight="200"
+        android:supportsRtl="true"
+        android:ttcIndex="8" />
+
+    <font
+        android:font="@font/poppins_semibolditalic"
+        android:fontStyle="italic"
+        android:fontVariationSettings=""
+        android:fontWeight="600"
+        android:supportsRtl="true"
+        android:ttcIndex="9" />
+
+    <font
+        android:font="@font/poppins_bolditalic"
+        android:fontStyle="italic"
+        android:fontVariationSettings=""
+        android:fontWeight="700"
+        android:supportsRtl="true"
+        android:ttcIndex="10" />
+
+    <font
+        android:font="@font/poppins_extrabolditalic"
+        android:fontStyle="italic"
+        android:fontVariationSettings=""
+        android:fontWeight="800"
+        android:supportsRtl="true"
+        android:ttcIndex="11" />
+
+    <font
+        android:font="@font/poppins_blackitalic"
+        android:fontStyle="italic"
+        android:fontVariationSettings=""
+        android:fontWeight="900"
+        android:supportsRtl="true"
+        android:ttcIndex="12" />
+
+    <font
+        android:font="@font/poppins_lightitalic"
+        android:fontStyle="italic"
+        android:fontVariationSettings=""
+        android:fontWeight="300"
+        android:supportsRtl="true"
+        android:ttcIndex="13" />
+
+    <font
+        android:font="@font/poppins_thinitalic"
+        android:fontStyle="italic"
+        android:fontVariationSettings=""
+        android:fontWeight="200"
+        android:supportsRtl="true"
+        android:ttcIndex="14" />
+
+    <font
+        android:font="@font/poppins_extralightitalic"
+        android:fontStyle="italic"
+        android:fontVariationSettings=""
+        android:fontWeight="200"
+        android:supportsRtl="true"
+        android:ttcIndex="15" />
+
+    <font
+        android:font="@font/poppins_mediumitalic"
+        android:fontStyle="italic"
+        android:fontVariationSettings=""
+        android:fontWeight="500"
+        android:supportsRtl="true"
+        android:ttcIndex="16" />
+
+
+
+
+
+</font-family>
