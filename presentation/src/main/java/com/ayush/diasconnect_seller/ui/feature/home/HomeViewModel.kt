@@ -28,7 +28,7 @@ class HomeViewModel @Inject constructor(
 
 
     init {
-        getProductsDummy()
+        getProducts()
     }
 
     fun getProducts() {
