@@ -11,6 +11,7 @@ import com.ayush.domain.model.ProductUploadRequest
 import com.ayush.domain.model.User
 import com.ayush.domain.network.NetworkService
 import com.ayush.domain.network.ResultWrapper
+import diasconnect.seller.com.model.myOrder
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException
@@ -97,6 +98,8 @@ override suspend fun uploadProduct(productData: ProductUploadRequest, imageFiles
     }
 
 
+
+
     // Update makeWebRequest to handle multipart requests
     @OptIn(InternalAPI::class)
     suspend inline fun <reified T, R> makeWebRequest(
@@ -146,5 +149,16 @@ override suspend fun uploadProduct(productData: ProductUploadRequest, imageFiles
         } catch (e: Exception) {
             ResultWrapper.Error(e)
         }
+    }
+    override suspend fun getOrdersBySellerId(): ResultWrapper<List<myOrder>> {
+        val id = userPreferences.getUserData().id
+
+        return makeWebRequest(
+            url = "$baseUrl/orders/seller/$id",
+            method = HttpMethod.Get,
+            mapper = { response: List<myOrder> ->
+                response // The response is already a List<myOrder>, so we don't need to map it
+            }
+        )
     }
 }
